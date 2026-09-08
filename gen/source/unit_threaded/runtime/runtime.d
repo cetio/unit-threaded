@@ -155,7 +155,9 @@ auto toDirEntry(string a) {
 string removePackage(string name) {
     import std.algorithm: endsWith;
     import std.array: replace;
-    enum toRemove = "/package.d";
+    import std.path : dirSeparator;
+    
+    enum toRemove = dirSeparator~"package.d";
     return name.endsWith(toRemove)
         ? name.replace(toRemove, "")
         : name;
