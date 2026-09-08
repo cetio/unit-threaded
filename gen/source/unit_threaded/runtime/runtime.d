@@ -222,6 +222,16 @@ string writeUtMainFile(Options options) {
     return writeUtMainFile(options, findModuleNames(options));
 }
 
+private string defaultFileName(in string tempDirectory, in string workingDirectory) {
+    import std.path: buildPath, isDirSeparator, rootName;
+
+    size_t start = rootName(workingDirectory).length;
+    while(start < workingDirectory.length && isDirSeparator(workingDirectory[start]))
+        ++start;
+
+    return buildPath(tempDirectory, workingDirectory[start..$], "ut.d");
+}
+
 private string writeUtMainFile(Options options, in string[] modules) {
     import std.path: buildPath, dName = dirName;
     import std.stdio: writeln, File;
@@ -231,7 +241,7 @@ private string writeUtMainFile(Options options, in string[] modules) {
     import std.format : format;
 
     if (!options.fileName) {
-        options.fileName = buildPath(tempDir, getcwd[1..$], "ut.d");
+        options.fileName = defaultFileName(tempDir, getcwd);
     }
 
     if(!haveToUpdate(options, modules)) {
