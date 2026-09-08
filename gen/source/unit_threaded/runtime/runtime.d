@@ -173,8 +173,8 @@ string[] dubFilesToAbsPaths(in string fileName, in string[] files) {
     // dub has done it already
     return files
         .filter!(a => a != fileName)
-        .map!(a => removePackage(a))
         .map!(a => buildNormalizedPath(a))
+        .map!(a => removePackage(a))
         .array;
 }
 
@@ -222,7 +222,7 @@ string writeUtMainFile(Options options) {
     return writeUtMainFile(options, findModuleNames(options));
 }
 
-private string defaultFileName(in string tempDirectory, in string workingDirectory) {
+string defaultUtMainPath(in string tempDirectory, in string workingDirectory) {
     import std.path: buildPath, isDirSeparator, rootName;
 
     size_t start = rootName(workingDirectory).length;
@@ -241,7 +241,7 @@ private string writeUtMainFile(Options options, in string[] modules) {
     import std.format : format;
 
     if (!options.fileName) {
-        options.fileName = defaultFileName(tempDir, getcwd);
+        options.fileName = defaultUtMainPath(tempDir, getcwd);
     }
 
     if(!haveToUpdate(options, modules)) {
