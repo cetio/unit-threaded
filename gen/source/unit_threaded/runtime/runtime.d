@@ -170,10 +170,13 @@ string[] dubFilesToAbsPaths(in string fileName, in string[] files) {
     import std.path: buildNormalizedPath;
 
     // dub list of files, don't bother reading the filesystem since
-    // dub has done it already
+    // dub has done it already.
+    // Normalize fileName so the filter is separator-agnostic: dub describe
+    // emits native-separator paths but the -f CLI arg may use forward slashes.
+    const normalizedFileName = buildNormalizedPath(fileName);
     return files
-        .filter!(a => a != fileName)
         .map!(a => buildNormalizedPath(a))
+        .filter!(a => a != normalizedFileName)
         .map!(a => removePackage(a))
         .array;
 }

@@ -39,3 +39,19 @@ unittest {
             buildPath("/tmp", "projects", "unit-threaded", "ut.d"));
     }
 }
+
+@("dubFilesToAbsPaths")
+unittest {
+    import unit_threaded.should;
+    import std.path: buildPath;
+
+    version(Windows) {
+        // dub describe emits native backslash paths, but the -f CLI arg
+        // from dub.json preBuildCommands may use forward slashes.
+        dubFilesToAbsPaths("bin/ut.d", [`bin\ut.d`, `source\intuit\foo.d`]).shouldEqual(
+            [buildPath("source", "intuit", "foo.d")]);
+    } else {
+        dubFilesToAbsPaths("bin/ut.d", ["bin/ut.d", "source/intuit/foo.d"]).shouldEqual(
+            [buildPath("source", "intuit", "foo.d")]);
+    }
+}
